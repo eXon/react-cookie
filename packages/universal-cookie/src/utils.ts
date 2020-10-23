@@ -2,10 +2,26 @@ import * as cookie from 'cookie';
 import { Cookie, CookieGetOptions, CookieParseOptions } from './types';
 
 export function hasDocumentCookie() {
+  // use only in-memory cookies
+  // when user disable native cookies
+  // in browser settings
+  if (cookieDisabledBySettings()) {
+    return false;
+  }
+
   // Can we get/set cookies on document.cookie?
   return typeof document === 'object' && typeof document.cookie === 'string';
 }
 
+function cookieDisabledBySettings() {
+  if (typeof navigator !== 'object') {
+      return false;
+  }
+
+  // user can disable cookie for site
+  // in browser settings
+  return navigator.cookieEnabled === false;
+}
 export function cleanCookies() {
   document.cookie.split(';').forEach(function(c) {
     document.cookie = c
